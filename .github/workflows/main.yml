@@ -1,0 +1,26 @@
+name: Docker CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ] # Сработает каждый раз, когда ты делаешь git push в ветку main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Скачивает твой код из GitHub на сервер сборки
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3 # Авторизуется в твоем аккаунте Docker Hub
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5 # Собирает Dockerfile и отправляет образ
+        with:
+          context: .
+          push: true
+          # Твой логин timuryamchuk и название репозитория, который ты создал
+          tags: timuryamchuk/my-bot:latest
